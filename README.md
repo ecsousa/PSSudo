@@ -6,7 +6,12 @@ This function is aliased as `sudo`
 
 ## Installing
 
-If you have [PsGet](http://psget.net/) installed:
+Windows 10 users:
+
+    Install-Module PSSudo -Scope CurrentUser
+
+Otherwise, if you have [PsGet](http://psget.net/) installed:
+
 
     Install-Module PSSudo
   
