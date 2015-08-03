@@ -58,6 +58,3 @@ function Start-Elevated {
 
 Set-Alias sudo Start-Elevated
 
-Export-ModuleMember -Function Start-Elevated -Alias sudo
-
-
