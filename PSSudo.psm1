@@ -1,18 +1,12 @@
-if([Diagnostics.Process]::GetCurrentProcess().Modules | ? { ($_.ModuleName -eq 'ConEmuHk.dll') -or ($_.ModuleName -eq 'ConEmuHk64.dll') }) {
-    $emuHk = $true;
-}
-else {
-    $emuHk = $false;
-}
-
-
 function Start-Elevated {
     $psi = new-object System.Diagnostics.ProcessStartInfo
+
+    $emuHk = $env:ConEmuHooks -eq 'Enabled'
 
     if($args.Length -eq 0) {
         if($emuHk) {
             $psi.FileName = $env:WINDIR + '\System32\WindowsPowerShell\v1.0\powershell.exe'
-            $psi.Arguments = '-new_console:a -ExecutionPolicy ' + (Get-ExecutionPolicy) + ' -NoExit -Command "Import-Module ''' + $PSScriptRoot + '''"'
+            $psi.Arguments = "-new_console:a -ExecutionPolicy $(Get-ExecutionPolicy) -NoLogo"
             $psi.UseShellExecute = $false
         }
         else {
@@ -21,32 +15,48 @@ function Start-Elevated {
         }
     }
     else {
-        $program = $args[0]
-
-        $alias = Get-Alias $program -ErrorAction SilentlyContinue
-        while($alias) {
-            $program = $alias.Definition;
-            $alias = Get-Alias $program -ErrorAction SilentlyContinue
-        }
-
-        if($emuHk) {
-            $fullProgram = which $program | select-object -First 1
-
-            if($fullProgram) {
-                $program = $fullProgram
-            }
-            
-            $psi.UseShellExecute = $false
-            $cmdLine = '-new_console:a ';
+        if($args.Length -ne 1) {
+            $cmdLine = [string]::Join(' ', ($args[1..$args.Length] | % { '"' + (([string] $_).Replace('"', '""')) + '"' }) )
         }
         else {
-            $psi.Verb = "runas"
             $cmdLine = ''
         }
 
-        if($args.Length -ne 1) {
-            $cmdLine = $cmdLine + [string]::Join(' ', ($args[1..$args.Length] | % { '"' + (([string] $_).Replace('"', '""')) + '"' }) )
+        $cmd = $args[0]
+
+        $alias = Get-Alias $cmd -ErrorAction SilentlyContinue
+        while($alias) {
+            $cmd = $alias.Definition;
+            $alias = Get-Alias $cmd -ErrorAction SilentlyContinue
         }
+
+        $cmd = Get-Command $cmd -ErrorAction SilentlyContinue
+
+        switch -regex ($cmd.CommandType) {
+            'Application' {
+                $program = $cmd.Source
+            }
+            'Cmdlet|Function' {
+                $program = $env:WINDIR + '\System32\WindowsPowerShell\v1.0\powershell.exe'
+
+                $cmdLine = "$($cmd.Name) $cmdLine"
+                $cmdLine = "-NoLogo -Command `"$cmdLine; pause`""
+
+            }
+            default {
+                Write-Warning "Command '$($args[0])' not found."
+                return
+            }
+        }
+
+        if($emuHk) {
+            $psi.UseShellExecute = $false
+            $cmdLine = "-new_console:a $cmdLine";
+        }
+        else {
+            $psi.Verb = "runas"
+        }
+
 
         $psi.FileName = $program
         $psi.Arguments = $cmdLine
