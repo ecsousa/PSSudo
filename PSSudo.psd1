@@ -10,4 +10,8 @@ CLRVersion = '4.0'
 FunctionsToExport = @('Start-Elevated')
 AliasesToExport = @('sudo')
 HelpInfoURI = 'https://github.com/ecsousa/PSSudo'
+PrivateData = @{
+        Tags='sudo elevation'
+        ProjectUri='https://github.com/ecsousa/PSSudo'
+    }
 }
