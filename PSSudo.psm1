@@ -43,6 +43,12 @@ function Start-Elevated {
                 $cmdLine = "-NoLogo -Command `"$cmdLine; pause`""
 
             }
+            'ExternalScript' {
+                $program = $env:WINDIR + '\System32\WindowsPowerShell\v1.0\powershell.exe'
+
+                $cmdLine = "& '$($cmd.Source)' $cmdLine"
+                $cmdLine = "-NoLogo -Command `"$cmdLine; pause`""
+            }
             default {
                 Write-Warning "Command '$($args[0])' not found."
                 return
