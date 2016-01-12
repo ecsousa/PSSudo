@@ -10,7 +10,7 @@ function Start-Elevated {
             $psi.UseShellExecute = $false
         }
         else {
-            Write-Warning "You must provived to program to be executed and its command line arguments"
+            Write-Warning "You must provide a program to be executed with its command line arguments."
             return
         }
     }
