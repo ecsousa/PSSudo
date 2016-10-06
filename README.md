@@ -1,6 +1,6 @@
 # PSSudo
 
-PowerShell module that provides `Start-Elevated` function: it will the provided command line in elavated mode. There is only one restriction: the command to be executed must be a program.
+PowerShell module that provides `Start-Elevated` function: it will execute the provided command line in elavated mode. There is only one restriction: the command to be executed must be a program.
 
 This function is aliased as `sudo`
 
