@@ -24,10 +24,27 @@ function Start-Elevated {
 
         $cmd = $args[0]
 
-        $alias = Get-Alias $cmd -ErrorAction SilentlyContinue
-        while($alias) {
-            $cmd = $alias.Definition;
-            $alias = Get-Alias $cmd -ErrorAction SilentlyContinue
+        if($cmd -is [ScriptBlock]) {
+            $tempFile = [System.IO.FileInfo] [System.IO.Path]::GetTempFileName();
+            $scriptFile = Join-Path $tempFile.Directory ($tempFile.BaseName + '.ps1');
+
+            Set-Content $tempFile ([string] $cmd);
+             
+            mv $tempFile $scriptFile;
+
+            $cmd = $scriptFile;
+
+            $cmdLine = "$cmdLine; rm $scriptFile";
+
+        }
+
+        else {
+
+            $alias = Get-Alias $cmd -ErrorAction SilentlyContinue;
+            while($alias) {
+                $cmd = $alias.Definition;
+                $alias = Get-Alias $cmd -ErrorAction SilentlyContinue;
+            }
         }
 
         $cmd = Get-Command $cmd -ErrorAction SilentlyContinue
