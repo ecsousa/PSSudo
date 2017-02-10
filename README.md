@@ -50,4 +50,4 @@ Otherwise, if you have [PsGet](http://psget.net/) installed:
     Install-Module PSSudo
 
 Or you can install it manually coping `PSSudo.psm1` to your modules folder (e.g.
-`$Env:USERPROFILE\Eduardo_Sousa\Documents\WindowsPowerShell\Modules\PSSudo\`)
+`$Env:USERPROFILE\Documents\WindowsPowerShell\Modules\PSSudo\`)
