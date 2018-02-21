@@ -1,11 +1,11 @@
-function Start-Elevated {
+﻿function Start-Elevated {
     $psi = new-object System.Diagnostics.ProcessStartInfo
 
     $emuHk = $env:ConEmuHooks -eq 'Enabled'
 
     if($args.Length -eq 0) {
         if($emuHk) {
-            $psi.FileName = $env:WINDIR + '\System32\WindowsPowerShell\v1.0\powershell.exe'
+            $psi.FileName = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName
             $psi.Arguments = "-new_console:a -ExecutionPolicy $(Get-ExecutionPolicy) -NoLogo"
             $psi.UseShellExecute = $false
         }
@@ -54,14 +54,14 @@ function Start-Elevated {
                 $program = $cmd.Source
             }
             'Cmdlet|Function' {
-                $program = $env:WINDIR + '\System32\WindowsPowerShell\v1.0\powershell.exe'
+                $program = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName
 
                 $cmdLine = "$($cmd.Name) $cmdLine"
                 $cmdLine = "-NoLogo -Command `"$cmdLine; pause`""
 
             }
             'ExternalScript' {
-                $program = $env:WINDIR + '\System32\WindowsPowerShell\v1.0\powershell.exe'
+                $program = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName
 
                 $cmdLine = "& '$($cmd.Source)' $cmdLine"
                 $cmdLine = "-NoLogo -Command `"$cmdLine; pause`""
