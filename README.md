@@ -1,5 +1,9 @@
 # PSSudo
 
+**Note: I will no longer enhance this module. I recommed using
+[gsudo](https://github.com/gerardog/gsudo) instead, which provide a much better
+solution.**
+
 PowerShell module that provides `Start-Elevated` function: it will execute the
 provided command line with elevated privileges. This module is able to handle
 the following argument types:
